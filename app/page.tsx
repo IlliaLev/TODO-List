@@ -1,11 +1,18 @@
 "use client"
 
+import {useState} from 'react';
+
 import Button from "./CButton";
+import Divider from "./CDivider";
 
 export default function Home() {
-  //max-width
+  const [items, setItems] = useState<string[]>([]);
+  const [newItem, setNewItem] = useState("");
+
   const addTask = () => {
-    console.log("Helo");
+    if(newItem.trim() === "") return;
+    setItems([...items, newItem]);
+    setNewItem("");
   }
 
   return (
@@ -23,6 +30,7 @@ export default function Home() {
         <input placeholder="Enter task name..." className={`
             outline-none
             text-center
+            px-[5px]
             bg-white/20
             placeholder-[#D17A8E]
             text-[#D17A8E]
@@ -35,12 +43,25 @@ export default function Home() {
             focus:border-b-[#DD797D] focus:border-b-2
             hover:border-b-[#D17A8E] hover:border-b-2
             transition duration-300
-          `}></input>
+          `}
+          onChange={e => setNewItem(e.target.value)}
+          value={newItem}></input>
         <Button onclick={addTask}>Add Task</Button>
       </div>
-      <ol>
-          
-      </ol>
+      <Divider></Divider>
+      <div className={`
+        w-[93%] h-[70%] max-h-[70%]
+        mt-[7px] mb-[7px]
+        `}>
+        <ol className={`
+          w-full max-h-full overflow-y-auto list-decimal
+          `}>
+            {items.map((item, idx) => (
+              <li key={idx}>{item}</li>
+            ))}
+        </ol>
+      </div>
+      <Divider></Divider>
     </div>
   );
 }
