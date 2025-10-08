@@ -1,5 +1,9 @@
+import {useState} from 'react';
+
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome"
 import { faTrash, faInfoCircle } from "@fortawesome/free-solid-svg-icons"
+
+import Popup from './Popup';
 
 interface ItemProps {
     title: string,
@@ -9,6 +13,8 @@ interface ItemProps {
 }
 
 export default function Item({title, completed, onToggle, onDelete} : ItemProps) {
+    const [showPopup, setShowPopup] = useState(false);
+
     return (
         <div className={`
             bg-white/20
@@ -18,8 +24,8 @@ export default function Item({title, completed, onToggle, onDelete} : ItemProps)
             rounded-lg
         `}>
             <div className={`
-                max-w-[70%]
-                w-[70%]
+                max-w-[60%]
+                w-[60%]
                 `}>
             <label className={`
                 relative group inline-flex
@@ -42,7 +48,7 @@ export default function Item({title, completed, onToggle, onDelete} : ItemProps)
                     mr-1.5
                     `}>
                 <label className={`
-                    relative mr-1.5 flex items-center justify-center
+                    relative flex items-center justify-center
                     `}>
                     <input type="checkbox" className={`
                         peer
@@ -71,7 +77,7 @@ export default function Item({title, completed, onToggle, onDelete} : ItemProps)
                     hover:text-[#A55086]
                     active:text-[#A55086]
                     transition duration-300
-                    `}>
+                    `} onClick={() => setShowPopup(true)}>
                     <FontAwesomeIcon icon={faInfoCircle}></FontAwesomeIcon>
                 </button>
 
@@ -84,6 +90,20 @@ export default function Item({title, completed, onToggle, onDelete} : ItemProps)
                 `}>
                     <FontAwesomeIcon icon={faTrash}></FontAwesomeIcon>
                 </button>
+                
+                <Popup show={showPopup} onClose={() => setShowPopup(false)}>
+                    <h2 className={`
+                        font-bold
+                        text-[#B63E5A]
+                        `}>Task Name</h2>
+                    <p className={`
+                        w-full
+                        max-w-full
+                        break-words
+                        text-[#B63E5A]
+                        `}>{title}</p>
+                </Popup>
+                
             </div>
         </div>
     );
