@@ -1,18 +1,49 @@
 "use client"
 
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
 
 import Button from "./CButton";
 import Divider from "./CDivider";
+import Item from './Item';
+
+type Todo = {
+  id: number,
+  text: string,
+  completed: boolean,
+}
 
 export default function Home() {
-  const [items, setItems] = useState<string[]>([]);
-  const [newItem, setNewItem] = useState("");
+  const [todos, setTodos] = useState<Todo[]>([]);
+  const [text, setText] = useState("");
+
+  useEffect(() => {
+    const saved = localStorage.getItem("todos");
+    if(saved) {
+      setTodos(JSON.parse(saved))
+    }
+  }, [])
+
+  useEffect(() => {
+    localStorage.setItem("todos", JSON.stringify(todos));
+  }, [todos]);
 
   const addTask = () => {
-    if(newItem.trim() === "") return;
-    setItems([...items, newItem]);
-    setNewItem("");
+    if(text.trim() === "") return;
+    const newTodo: Todo = {id: Date.now(), text: text, completed: false};
+    setTodos([...todos, newTodo]);
+    setText("");
+  }
+
+  const toggleTodo = (id: number) => {
+    setTodos(
+      todos.map(todo => (
+        todo.id === id ? {...todo, completed: !todo.completed} : todo
+      ))
+    )
+  }
+
+  const deleteTodo = (id: number) => {
+    setTodos(todos.filter(todo => todo.id !== id));
   }
 
   return (
@@ -44,8 +75,8 @@ export default function Home() {
             hover:border-b-[#D17A8E] hover:border-b-2
             transition duration-300
           `}
-          onChange={e => setNewItem(e.target.value)}
-          value={newItem}></input>
+          onChange={e => setText(e.target.value)}
+          value={text}></input>
         <Button onclick={addTask}>Add Task</Button>
       </div>
       <Divider></Divider>
@@ -54,10 +85,10 @@ export default function Home() {
         mt-[7px] mb-[7px]
         `}>
         <ol className={`
-          w-full max-h-full overflow-y-auto list-decimal
+          w-full max-h-full overflow-y-scroll list-decimal no-scrollbar
           `}>
-            {items.map((item, idx) => (
-              <li key={idx}>{item}</li>
+            {todos.map(todo => (
+              <li key={todo.id}><Item title={todo.text} completed={todo.completed} onToggle={() => toggleTodo(todo.id)} onDelete={() => deleteTodo(todo.id)}></Item></li>
             ))}
         </ol>
       </div>

@@ -18,7 +18,7 @@ export default function Button({children, onclick} : ButtonProps) {
                 active:border-b-[#DD797D] focus:border-b-2
                 hover:border-b-[#D17A8E] hover:border-b-2
                 rounded-[5px]
-                
+                outline-none
                 transition duration-300
             `}>{children}</button>
     );
